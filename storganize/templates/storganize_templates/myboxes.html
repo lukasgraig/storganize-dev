@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+<html>
+ <head>
+  {% block header %}
+  <div class="container">
+    <h1>{% block title %}{% endblock %}</h1>
+    {% if g.user %}
+      <a type="button" class="btn btn-success" class="action" href="{{ url_for('storage.create_box') }}">New Box</a>
+      <hr>
+    {% endif %}
+  {% endblock %}
+  </div>
+
+ </head>
+  <body>
+    {% block content %}
+      <div class="container serv">
+        {% for post in posts %}
+              <div class="card" style="width: 15rem;">
+                <img id="my-img" src="\static\images\staticbox.png" onmouseover="hover(this);" onmouseout="unhover(this);" />
+                <div class="card-body">
+                  <div class="card-title"> {{ post['box_title'] }} || {{ post['uuid'] }}</div>
+                  <div class="card-subtitle mb-2 text-muted">by {{ post['username'] }} </div>
+                  <div>
+                    <a type="button" class="btn btn-warning" class="action" href="{{ url_for('storage.update', uuid=post['uuid']) }}">Edit</a>
+                    <a type="button" class="btn btn-primary" class="action" href="{{ url_for('storage.view', uuid=post['uuid']) }}">View</a>
+                  </div>
+                </div>
+              </div>
+        {% endfor %}
+        
+      </div>
+      
+      <script>
+        function hover(element) {
+          element.setAttribute('src', 'static\\images\\boxopening.gif');
+        }
+
+        function unhover(element) {
+          element.setAttribute('src', 'static\\images\\staticbox.png');
+        }
+      </script>
+    {% endblock %}
+  </body>
+
+</html>
+  

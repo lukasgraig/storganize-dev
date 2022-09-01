@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<div class="container">
+  <h1>{% block title %}New storage{% endblock %}</h1>
+</div>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    <div class="container px-4">
+      <div >
+        <label for="title">Title</label>
+        <input class="form-control" type="text" placeholder="Box Title" name="box_title" id="box_title" required>
+      </div>
+      <div>
+        <label for="body">Description</label>
+        <input class="form-control" type="text" placeholder="Box Description" name="box_desc" id="box_desc">
+      </div>
+      <div>
+        <label for="body">Box Type</label>
+        <input class="form-control" type="text" placeholder="Box Type" name="box_type" id="box_type">
+      </div>
+      <hr>
+      <label for="body">Box Item</label>
+      <div id="item_fields">
+          <input class="form-control" type="text" placeholder="Item" name="box_item" id="box_items">
+      </div>
+      </div>
+     
+      <div class="container px-4 p-3">
+        <button type="button" onclick="item_fields();">Add another item</button>
+        <input type="submit" value="Create Box">
+      </div>
+ 
+    </div>
+    </form>
+
+<!-- https://www.w3schools.com/code/tryit.asp?filename=GJ9OO3OR58NA -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+    var room = 1;
+
+    function item_fields() {
+        room++;
+        var objTo = document.getElementById('item_fields')
+        var divtest = document.createElement("div");
+        divtest.setAttribute("class", "removeclass" + room);
+        var rdiv = 'removeclass' + room;
+        divtest.innerHTML = '<div class="input-group"><input style="margin-top: 15px;" class="form-control" id="Schoolname" value="" type="text" placeholder="Item" aria-label="default input example" name="box_item" id="box_items"> <button style="margin-top: 15px;" type="button" class="input-group-addon btn btn-danger" onclick="remove_education_fields(' + room + ');">Remove</button></div>';
+        objTo.appendChild(divtest)
+    }
+
+    function remove_education_fields(rid) {
+        $('.removeclass' + rid).remove();
+    }
+</script>
+{% endblock %}

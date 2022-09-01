@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+  {% block content %}
+  <div class="container">
+    <div class="ex2">
+      <h1>Edit Box: {{ info['box_title'] }}</h1>
+      <form method="post">
+        <div>
+          <label for="title">Title</label>
+          <input class="form-control" name="box_title" placeholder="{{ info['box_title'] }}">
+        </div>
+        <div>
+          <label for="title">Box Description</label>
+          <input class="form-control" name="box_desc" placeholder="{{ info['box_desc'] }}">
+        </div>
+        <div>
+          <label for="title">Box Type</label>
+          <input class="form-control" name="box_type" placeholder="{{ info['box_type'] }}">
+        </div>
+        <hr>
+        <label for="title">Item(s)</label>
+        <div>
+          {% for item in items %}
+          <div>
+            <div class="input-group">
+              <input style="margin-top: 15px;" class="form-control" name="box_item" placeholder="{{ item['item'] }}">
+              <input style="margin-top: 15px;" class="input-group-addon btn btn-danger" type="submit" value="Delete">
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <input style="margin-top: 15px;" class="btn btn-success" type="submit" value="Update">
+      </form>
+    
+    </div>
+    <hr>
+  </div>
+
+  {% endblock %}
+</body>
+</html>

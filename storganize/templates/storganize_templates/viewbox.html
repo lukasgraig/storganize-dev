@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+<html>
+    <head>
+
+    </head>
+    <body>
+        {% block content %}
+        <div class="p-5">
+            <div class="card container-fluid" style="width: 25rem;">
+                <img src="\static\qr_photo\{{img}}" class="card-img-top" alt="Box QR Code">
+                <div class="card-body">
+                  <h5 class="card-title"> {{ info['box_title'] }} </h5>
+
+                </div>
+                <ul class="list-group list-group-flush">
+                {% for item in items %}
+                  <li class="list-group-item">{{ item['item'] }}</li>
+                {% endfor %}
+                </ul>
+              </div>
+            <div class="container" style="margin-top: 25px;">
+              <a type="button" class="btn btn-danger" class="action" href="{{ url_for('storage.delete_box', uuid=info['uuid']) }}">Delete</a>
+            </div>   
+        </div>
+        {% endblock %}
+    </body>
+</html>
