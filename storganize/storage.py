@@ -1,5 +1,5 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for, current_app, send_file
+    Blueprint, flash, g, redirect, render_template, request, url_for
 )
 from werkzeug.exceptions import abort
 
@@ -23,7 +23,7 @@ def create_box():
         items = request.form.getlist('box_item') # use request.form.getlist when handling a dynamic form or one that has the same name placeholder
 
         print(f'Box_Title: {title}, Box_Description: {desc}, Box_type: {type}, Box_Items: {items}')
-        db = get_db()
+
         error=None
 
         if not title:
