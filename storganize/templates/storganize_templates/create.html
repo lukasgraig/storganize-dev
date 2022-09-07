@@ -8,18 +8,19 @@
 
 {% block content %}
   <form method="post">
+    {{ form.csrf_token }}
     <div class="container px-4">
       <div >
         <label for="title">Title</label>
-        <input class="form-control" type="text" placeholder="Box Title" name="box_title" id="box_title" required>
+        {{ form.box_title(class_="form-control") }}
       </div>
       <div>
         <label for="body">Description</label>
-        <input class="form-control" type="text" placeholder="Box Description" name="box_desc" id="box_desc">
+        {{ form.box_desc(class_="form-control") }}
       </div>
       <div>
         <label for="body">Box Type</label>
-        <input class="form-control" type="text" placeholder="Box Type" name="box_type" id="box_type">
+        {{ form.box_type(class_="form-control") }}
       </div>
       <hr>
       <label for="body">Box Item</label>
