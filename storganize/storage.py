@@ -1,3 +1,4 @@
+from typing import ItemsView
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for
 )
@@ -6,6 +7,7 @@ from werkzeug.exceptions import abort
 from storganize.auth import login_required
 from storganize.db import get_db
 from storganize.createqr import CreateQR
+from storganize.forms import CreateBoxForm, AddItemForm
 
 bp = Blueprint('storage', __name__)
 
@@ -16,46 +18,33 @@ def index():
 @bp.route('/create', methods=['GET', 'POST'])
 @login_required
 def create_box():
-    if request.method=='POST':
-        title = request.form['box_title']
-        desc = request.form['box_desc']
-        type = request.form['box_type']
+    form = CreateBoxForm()
+
+    print('outside')
+    if form.validate_on_submit():
         items = request.form.getlist('box_item') # use request.form.getlist when handling a dynamic form or one that has the same name placeholder
+    
+        #print(f'Box_Title: {form.box_title.data}, Box_Description: {form.box_desc.data}, Box_type: {form.box_type.data}, Box_Items: {items}')
 
-        print(f'Box_Title: {title}, Box_Description: {desc}, Box_type: {type}, Box_Items: {items}')
+        uuid = CreateQR.generate_uuid(g.user['username'])
 
-        error=None
+        db = get_db()
 
-        if not title:
-                error = 'Title is required.'
-
-        if error is not None:
-            flash(error)
-        else:
-            # handle blank indexes in the list
-            while '' in items:
-                items.remove('')
-            
-            print(f'Box_Title: {title}, Box_Description: {desc}, Box_type: {type}, Box_Items: {items}')
-
-            uuid = CreateQR.generate_uuid(g.user['username'])
-
-            db = get_db()
+        db.execute(
+            'INSERT INTO storage_box (uuid, username, box_type, box_title, box_desc)'
+            ' VALUES (?, ?, ?, ?, ?)',
+            (uuid, g.user['username'], form.box_type.data, form.box_title.data, form.box_desc.data)
+        )
+        for item in items:
             db.execute(
-                'INSERT INTO storage_box (uuid, username, box_type, box_title, box_desc)'
-                ' VALUES (?, ?, ?, ?, ?)',
-                (uuid, g.user['username'], type, title, desc)
+                'INSERT INTO items (item, uuid)'
+                ' VALUES (?, ?)',
+                (item, uuid)
             )
-            for item in items:
-                db.execute(
-                    'INSERT INTO items (item, uuid)'
-                    ' VALUES (?, ?)',
-                    (item, uuid)
-                )
-            db.commit()
-            return redirect(url_for('storage.index'))
+        db.commit()
+        return redirect(url_for('storage.index'))
 
-    return render_template('storganize_templates/create.html')
+    return render_template('storganize_templates/create.html', form=form)
 
 @bp.route('/myboxes', methods=['GET'])
 @login_required
