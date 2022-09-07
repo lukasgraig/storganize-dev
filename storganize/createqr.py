@@ -21,7 +21,7 @@ class CreateQR:
         #img.show()
 
         save_img = user_qr + '.png' # add png to the file
-        img.save(save_img) # save the img
+        img.save(f'..\storganizesite\storganize\static\qr_photo\{save_img}', 'PNG') # save the img
 
         return uuid
 
