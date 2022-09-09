@@ -19,7 +19,7 @@
         {% if g.user %}
           <li class="nav-item"><a class="nav-link" href="{{ url_for('storage.index') }}">Home</a></li>
           <li class="nav-item"><a class="nav-link" href="{{ url_for('storage.create_box') }}">Create</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('storage.box_list') }}">My Boxes</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('storage.get_all_storage_box') }}">My Boxes</a></li>
           <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout') }}">Log Out</a></li>
         {% else %}
           <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.register') }}">Register</a></li>
