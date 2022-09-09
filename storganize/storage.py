@@ -1,4 +1,3 @@
-from typing import ItemsView
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for
 )
@@ -7,7 +6,7 @@ from werkzeug.exceptions import abort
 from storganize.auth import login_required
 from storganize.db import get_db
 from storganize.createqr import CreateQR
-from storganize.forms import CreateBoxForm, AddItemForm
+from storganize.forms import CreateBoxForm
 
 bp = Blueprint('storage', __name__)
 
@@ -20,16 +19,12 @@ def index():
 def create_box():
     form = CreateBoxForm()
 
-    print('outside')
     if form.validate_on_submit():
         items = request.form.getlist('box_item') # use request.form.getlist when handling a dynamic form or one that has the same name placeholder
-    
-        #print(f'Box_Title: {form.box_title.data}, Box_Description: {form.box_desc.data}, Box_type: {form.box_type.data}, Box_Items: {items}')
 
-        uuid = CreateQR.generate_uuid(g.user['username'])
+        uuid = CreateQR.generate_uuid(g.user['username']) # request to create a qr code
 
-        db = get_db()
-
+        db = get_db()  # establish connection to db
         db.execute(
             'INSERT INTO storage_box (uuid, username, box_type, box_title, box_desc)'
             ' VALUES (?, ?, ?, ?, ?)',
@@ -42,13 +37,16 @@ def create_box():
                 (item, uuid)
             )
         db.commit()
-        return redirect(url_for('storage.index'))
+
+        return redirect(url_for('storage.get_all_storage_box'))  # redirect user back to the index page
 
     return render_template('storganize_templates/create.html', form=form)
 
 @bp.route('/myboxes', methods=['GET'])
 @login_required
-def box_list():
+def get_all_storage_box():
+    # returns all the boxes that the user has created
+
     db = get_db()
     posts = db.execute('''SELECT * FROM storage_box
                     WHERE storage_box.username = ?''', (g.user['username'],)).fetchall()
@@ -61,9 +59,9 @@ def view(uuid, check_author=True):
     info, items = get_post(uuid)
 
     if check_author and info['username'] != g.user['username']:
-        abort(403, f"This box doesnt belong to you")
+        abort(403, render_template('storganize_templates/notfound.html'))
     if not info:
-        abort(404, f"Post id {uuid} doesn't exist.")
+        abort(404, render_template('storganize_template/notfound.html'))
 
     filename = g.user['username'] + '-' + uuid + '.png'
     return render_template('storganize_templates/viewbox.html', info=info, items=items, img=filename)
@@ -76,9 +74,6 @@ def get_post(uuid):
     
     items = db.execute('''SELECT items.* FROM items
                         WHERE items.uuid = ?''', (uuid,)).fetchall()
-
-    '''if not post:
-        abort(404, f"Post id {uuid} doesn't exist.")'''
 
     return info, items
 
@@ -131,5 +126,6 @@ def delete_box(uuid):
     db = get_db()
     db.execute('DELETE FROM storage_box WHERE uuid=?', (uuid,))
     db.execute('DELETE FROM items WHERE uuid=?', (uuid,))
+    
     db.commit()
     return redirect(url_for('storage.box_list'))
