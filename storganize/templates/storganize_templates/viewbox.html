@@ -5,6 +5,10 @@
     </head>
     <body>
         {% block content %}
+        <div class="container" style="margin-top: 25px;">
+          <a type="button" class="btn btn-danger" class="action" href="{{ url_for('storage.delete_box', uuid=info['uuid']) }}">Delete</a>
+          <hr>
+        </div> 
         <div class="p-5">
             <div class="card container-fluid" style="width: 25rem;">
                 <img src="\static\qr_photo\{{img}}" class="card-img-top" alt="Box QR Code">
@@ -18,9 +22,6 @@
                 {% endfor %}
                 </ul>
               </div>
-            <div class="container" style="margin-top: 25px;">
-              <a type="button" class="btn btn-danger" class="action" href="{{ url_for('storage.delete_box', uuid=info['uuid']) }}">Delete</a>
-            </div>   
         </div>
         {% endblock %}
     </body>
