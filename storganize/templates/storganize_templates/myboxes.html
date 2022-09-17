@@ -16,15 +16,15 @@
   <body>
     {% block content %}
       <div class="container serv">
-        {% for post in posts %}
+        {% for box in boxes %}
               <div class="card" style="width: 15rem;">
                 <img id="my-img" src="\static\images\staticbox.png" onmouseover="hover(this);" onmouseout="unhover(this);" />
                 <div class="card-body">
-                  <div class="card-title"> {{ post['box_title'] }} || {{ post['uuid'] }}</div>
-                  <div class="card-subtitle mb-2 text-muted">by {{ post['username'] }} </div>
+                  <div class="card-title"> {{ box['box_title'] }} || {{ box['uuid'] }}</div>
+                  <div class="card-subtitle mb-2 text-muted">by {{ box['username'] }} </div>
                   <div>
-                    <a type="button" class="btn btn-warning" class="action" href="{{ url_for('storage.update', uuid=post['uuid']) }}">Edit</a>
-                    <a type="button" class="btn btn-primary" class="action" href="{{ url_for('storage.view', uuid=post['uuid']) }}">View</a>
+                    <a type="button" class="btn btn-warning" class="action" href="{{ url_for('storage.update', uuid=box['uuid']) }}">Edit</a>
+                    <a type="button" class="btn btn-primary" class="action" href="{{ url_for('storage.view', uuid=box['uuid']) }}">View</a>
                   </div>
                 </div>
               </div>
