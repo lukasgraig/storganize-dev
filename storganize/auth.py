@@ -5,6 +5,7 @@ from flask import (
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from storganize.db import get_db
+from storganize.forms import CreateUser
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -14,25 +15,25 @@ def register():
     if the user submits a username and password then it will POST to the server and update the database, checks will be followed to 
     see if the username already exists if it does then the user will be redirected to the login page using the url_for() method'''
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+        user_info = CreateUser()
         db = get_db()
+
         error = None
 
-        if not username:
+        if not user_info.username.data:
             error = 'Username is required.'
-        elif not password:
+        elif not user_info.username.data:
             error = 'Password is required.'
 
         if error is None:
             try:
                 db.execute(
-                    "INSERT INTO user (username, password) VALUES (?, ?)",
-                    (username, generate_password_hash(password)),
+                    "INSERT INTO user (name, username, password) VALUES (?, ?, ?)",
+                    (user_info.name.data, user_info.username.data ,generate_password_hash(user_info.password.data)),
                 )
                 db.commit()
             except db.IntegrityError:
-                error = f"User {username} is already registered."
+                error = f"User {user_info.username.data} is already registered."
             else:
                 return redirect(url_for("auth.login"))
 
