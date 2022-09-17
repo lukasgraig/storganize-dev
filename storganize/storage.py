@@ -1,3 +1,4 @@
+from traceback import format_list
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for
 )
@@ -6,7 +7,7 @@ from werkzeug.exceptions import abort
 from storganize.auth import login_required
 from storganize.db import get_db
 from storganize.createqr import CreateQR
-from storganize.forms import CreateBoxForm
+from storganize.forms import BoxForm
 
 bp = Blueprint('storage', __name__)
 
@@ -17,7 +18,7 @@ def index():
 @bp.route('/create', methods=['GET', 'POST'])
 @login_required
 def create_box():
-    form = CreateBoxForm()
+    form = BoxForm()
 
     if form.validate_on_submit():
         items = request.form.getlist('box_item') # use request.form.getlist when handling a dynamic form or one that has the same name placeholder
@@ -48,63 +49,74 @@ def get_all_storage_box():
     # returns all the boxes that the user has created
 
     db = get_db()
-    posts = db.execute('''SELECT * FROM storage_box
+    boxes = db.execute('''SELECT * FROM storage_box
                     WHERE storage_box.username = ?''', (g.user['username'],)).fetchall()
     
-    return render_template('storganize_templates/myboxes.html', posts=posts)
+    return render_template('storganize_templates/myboxes.html', boxes=boxes)
 
-@bp.route('/view/<uuid>', methods=['GET'])
+@bp.route('/<uuid>/view', methods=['GET'])
 @login_required
 def view(uuid, check_author=True):
-    info, items = get_post(uuid)
+    user_info, user_items = get_box_from_uuid(uuid)
 
-    if check_author and info['username'] != g.user['username']:
+    if check_author and user_info['username'] != g.user['username']:
         abort(403, render_template('storganize_templates/notfound.html'))
-    if not info:
+    if not user_info:
         abort(404, render_template('storganize_template/notfound.html'))
 
     filename = g.user['username'] + '-' + uuid + '.png'
-    return render_template('storganize_templates/viewbox.html', info=info, items=items, img=filename)
+    return render_template('storganize_templates/viewbox.html', info=user_info, items=user_items, img=filename)
 
-def get_post(uuid):
+def get_box_from_uuid(uuid):
+    # function for the program to retrieve box based on what the uuid the user specifies is
+
     db = get_db()
-    
-    info = db.execute('''SELECT * FROM storage_box
+    user_info = db.execute('''SELECT * FROM storage_box
                     WHERE storage_box.uuid = ?''', (uuid,)).fetchone()
     
-    items = db.execute('''SELECT items.* FROM items
+    user_items = db.execute('''SELECT items.* FROM items
                         WHERE items.uuid = ?''', (uuid,)).fetchall()
 
-    return info, items
+    return user_info, user_items
 
 @bp.route('/<uuid>/update', methods=['GET', 'POST'])
 @login_required
 def update(uuid):
-    info, items = get_post(uuid)
+    user_info, user_items = get_box_from_uuid(uuid)
+    
+    box_info = {
+        'box_title': user_info[5],
+        'box_desc': user_info[4],
+        'box_type': user_info[3]
+    }
 
     if request.method == 'POST':
-        box_title = request.form['box_title']
-        box_desc = request.form['box_desc']
-        box_type = request.form['box_type']
+        form = BoxForm()
+
         item = request.form['box_item']
+
+        # check to see if user updated certain fields, if not then dont update them
+        #print(form_data.short_name) # gets the name tag in the html tag
+        for form_data in form:
+            if form_data.data == '':
+                form_data.data = box_info[form_data.short_name]
 
         error = None
 
-        if not box_title:
+        if not form.box_title.data:
            error = 'Title is required.'
 
         if error is not None:
             flash(error)
         else:
             db = get_db()
-            db.execute(
-                'UPDATE storage_box (box_type, box_title, box_desc)'
-                ' VALUES (?, ?, ?) WHERE uuid = ?',
-                (box_type, box_title, box_desc, uuid))
+            db.execute('UPDATE storage_box SET box_type =?, box_title=?, box_desc=? WHERE uuid = ?', 
+                (form.box_type.data, form.box_title.data, form.box_desc.data, uuid))
             db.commit()
+
             return redirect(url_for('storage.index'))
 
-    return render_template('storganize_templates/update.html', info=info, items=items)
+    return render_template('storganize_templates/update.html', info=user_info, items=user_items)
 
 @bp.route('/user/<username>')
 @login_required
