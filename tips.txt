@@ -1,0 +1,1 @@
+flask --app storganize init-db  --- Use this to initialize db if updating it
