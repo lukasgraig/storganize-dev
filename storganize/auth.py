@@ -14,32 +14,34 @@ def register():
     '''Method handles registration process, it will GET and render the register.html template when the user visits the page
     if the user submits a username and password then it will POST to the server and update the database, checks will be followed to 
     see if the username already exists if it does then the user will be redirected to the login page using the url_for() method'''
-    if request.method == 'POST':
-        user_info = CreateUser()
+    form = CreateUser()
+    
+    if form.validate_on_submit():
+        
         db = get_db()
 
         error = None
 
-        if not user_info.username.data:
+        if not form.username.data:
             error = 'Username is required.'
-        elif not user_info.username.data:
+        elif not form.username.data:
             error = 'Password is required.'
 
         if error is None:
             try:
                 db.execute(
                     "INSERT INTO user (name, username, password) VALUES (?, ?, ?)",
-                    (user_info.name.data, user_info.username.data ,generate_password_hash(user_info.password.data)),
+                    (form.name.data, form.username.data, generate_password_hash(form.password.data)),
                 )
                 db.commit()
             except db.IntegrityError:
-                error = f"User {user_info.username.data} is already registered."
+                error = f"User {form.username.data} is already registered."
             else:
                 return redirect(url_for("auth.login"))
 
         flash(error)
 
-    return render_template('auth/register.html')
+    return render_template('auth/register.html', form=form)
 
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
