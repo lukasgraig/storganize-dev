@@ -1,4 +1,4 @@
-from traceback import format_list
+
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for
 )
@@ -138,6 +138,8 @@ def delete_box(uuid):
     db = get_db()
     db.execute('DELETE FROM storage_box WHERE uuid=?', (uuid,))
     db.execute('DELETE FROM items WHERE uuid=?', (uuid,))
+
+
     
     db.commit()
-    return redirect(url_for('storage.box_list'))
+    return redirect(url_for('storage.get_all_storage_box'))
