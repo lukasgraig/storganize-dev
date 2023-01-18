@@ -15,9 +15,9 @@ def register():
     if the user submits a username and password then it will POST to the server and update the database, checks will be followed to 
     see if the username already exists if it does then the user will be redirected to the login page using the url_for() method'''
     form = CreateUser()
-    
+
     if form.validate_on_submit():
-        
+
         db = get_db()
 
         error = None
