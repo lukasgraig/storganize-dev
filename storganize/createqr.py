@@ -14,7 +14,8 @@ class CreateQR:
         
         img = qrcode.make(user_qr) # generate unique code with img
         edit_img = ImageDraw.Draw(img)
-        myFont = ImageFont.truetype('arial.ttf', 21) # pick font and size you want to add
+        #myFont = ImageFont.truetype('arial.ttf', 21) # pick font and size you want to add
+        myFont = ImageFont.truetype('/home/lukasgraig/.local/share/arial.ttf', 21)
 
         x = CreateQR.__calc_text_coords(myFont, img, user_qr)
         edit_img.text((x, 8), user_qr, font=myFont, stroke_fill=15) # add the text to the image // x @ 94, y @ 295 is best but calc is still WIP
