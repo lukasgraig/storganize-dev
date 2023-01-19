@@ -29,26 +29,38 @@
 
 <body>
     {% block content %}
-    <div class="container-fluid px-4 serv-box">
-        <div class="row gx-5  serv">
-            <div class="col ">
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                How Storganize works
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">An app that will make organizing storage easier and more efficient.</h5>
+                <p class="card-text">Storganize is an app that allows you to create better organization for your storage bins and moving boxes.
+                    This allows you to orgnaize much easier. The app allows you to create boxes which allow you to give it a 
+                    title, description and tags (ie. Holidays, Seasons). You then can add items to the box, once you hit create a qr code will
+                    be generated and you can print it out and stick it on the box. You can scan the QR code and it will provide a link to 
+                    your storganize box.
+                </p>
+            </div>
+        </div>
+        <div class="row gx-5 serv">
+            <div class="col p-4">
                 <div class="card">
                     <a type="button" class="btn" class="action" href="{{ url_for('storage.create_box') }}">
                     <img id="my-img" class="card-img-top" src="\static\images\staticbox.png" onmouseover="hover(this);" onmouseout="unhover(this);" />
                     <div class="card-body">
                         <h5 class="card-title">Create New Box</h5>
-                        <p class="card-text">Create a new box to put items into</p>
                     </div>
                     </a>
                 </div>
             </div>
-            <div class="col">
+            <div class="col p-4">
                 <div class="card">
                     <a type="button" class="btn" class="action" href="{{ url_for('storage.get_all_storage_box') }}">
                     <img id="my-img" class="card-img-top" src="\static\images\staticbox.png" onmouseover="hover(this);" onmouseout="unhover(this);" />
                     <div class="card-body">
                         <h5 class="card-title">View Boxes</h5>
-                        <p class="card-text">Click here to view your boxes</p>
                     </div>
                     </a>
                 </div>
