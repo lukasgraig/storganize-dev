@@ -7,7 +7,7 @@ from werkzeug.exceptions import abort
 from storganize.auth import login_required
 from storganize.db import get_db
 from storganize.createqr import CreateQR
-from storganize.forms import BoxForm
+from storganize.forms import BoxForm, SearchForm
 
 bp = Blueprint('storage', __name__)
 
@@ -139,7 +139,25 @@ def delete_box(uuid):
     db.execute('DELETE FROM storage_box WHERE uuid=?', (uuid,))
     db.execute('DELETE FROM items WHERE uuid=?', (uuid,))
 
-
-    
     db.commit()
     return redirect(url_for('storage.get_all_storage_box'))
+
+#pass stuff to the navbar
+@bp.context_processor
+def base():
+    form = SearchForm()
+    return dict(form=form)
+
+@bp.route('/myboxes/search', methods=['POST'])
+def search():
+    form = SearchForm()
+    if form.validate_on_submit():
+        #get data from submitted form
+        searched = form.searched.data
+        #query the database
+        db = get_db()
+        user_items = db.execute('''SELECT items.* FROM items
+                        WHERE items.item = ?''', (searched,)).fetchall()
+        returned_items = len(user_items)
+
+        return render_template("storganize_templates/search.html", form=form, searched=searched, items=user_items, num=returned_items)
