@@ -1,6 +1,6 @@
 from wsgiref.validate import validator
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField
+from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired
 
 class BoxForm(FlaskForm):
@@ -12,3 +12,7 @@ class CreateUser(FlaskForm):
     name = StringField('name', validators=[DataRequired()])
     username = StringField('username', validators=[DataRequired()])
     password = PasswordField('password', validators=[DataRequired()])
+
+class SearchForm(FlaskForm):
+    searched = StringField('searched', validators=[DataRequired()])
+    submit = SubmitField('submit')
