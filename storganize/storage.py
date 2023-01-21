@@ -158,6 +158,5 @@ def search():
         db = get_db()
         user_items = db.execute('''SELECT items.* FROM items
                         WHERE items.item = ?''', (searched,)).fetchall()
-        returned_items = len(user_items)
-
-        return render_template("storganize_templates/search.html", form=form, searched=searched, items=user_items, num=returned_items)
+        
+        return render_template("storganize_templates/search.html", form=form, searched=searched, items=user_items)
