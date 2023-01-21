@@ -15,7 +15,7 @@ class CreateQR:
         img = qrcode.make(user_qr) # generate unique code with img
         edit_img = ImageDraw.Draw(img)
         myFont = ImageFont.truetype('arial.ttf', 21) # pick font and size you want to add
-        #myFont = ImageFont.truetype('/home/lukasgraig/.local/share/arial.ttf', 21) DONT NEED JUST TEST
+        #myFont = ImageFont.truetype('/home/lukasgraig/.local/share/fonts/arial.ttf', 21) # this is the correct code to run on server
 
         x = CreateQR.__calc_text_coords(myFont, img, user_qr)
         edit_img.text((x, 8), user_qr, font=myFont, stroke_fill=15) # add the text to the image // x @ 94, y @ 295 is best but calc is still WIP
@@ -23,6 +23,7 @@ class CreateQR:
 
         save_img = user_qr + '.png' # add png to the file
         img.save(f'..\storganizesite\storganize\static\qr_photo\{save_img}', 'PNG') # save the img
+        #img.save(f'/home/lukasgraig/storaganizesite/storganize/static/qr_photo/{save_img}', 'PNG') # save the img to the server
 
         return uuid
 
