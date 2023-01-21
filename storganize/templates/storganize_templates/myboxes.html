@@ -4,15 +4,32 @@
  <head>
   {% block header %}
   <div class="container">
-    <h1>{% block title %}{% endblock %}</h1>
-    {% if g.user %}
-      <a type="button" class="btn btn-success" class="action" href="{{ url_for('storage.create_box') }}">New Box</a>
+    <div class="row">
+        <h1>{% block title %}{% endblock %}</h1>
+        {% if g.user %}
+          
+          <div class="col">
+            <a type="button" class="btn btn-success" class="action" href="{{ url_for('storage.create_box') }}">New Box</a>
+          </div>
+
+          <div class="col">
+            <form method="POST" action="{{url_for('storage.search')}}">
+              {{ form.hidden_tag() }}
+                <div class="input-group">
+                  <input class="form-control mr-1" name="searched" placeholder="Search..." size="15">
+                  <button type="submit" class="input-group-addon btn btn-primary">Search</button>
+                </div>
+            </form>
+          </div>
+      
+        {% endif %}
+      </div>
       <hr>
-    {% endif %}
-  {% endblock %}
   </div>
 
+  {% endblock %}
  </head>
+ 
   <body>
     {% block content %}
       <div class="container serv">
