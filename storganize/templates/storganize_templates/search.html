@@ -1,0 +1,45 @@
+{% extends 'storganize_templates/myboxes.html' %}
+
+<body>
+    {% block content %}
+
+    <div class="container">
+      <h2>{{ items|length }} item(s) showing for you search... </h2>
+
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Item Name</th>
+            <th scope="col">Box</th>
+            <th scope="col">Location</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in items %}
+          <tr>
+            <th scope="row">{{x}}</th>
+            <td>
+              {{ item['item'] }}
+            </td>
+            <td> 
+              <a href="{{ url_for('storage.view', uuid=item['uuid']) }}"> 
+                <div style="height:100%;width:100%">
+                  {{ item['uuid'] }}
+                </div>
+              </a>
+            </td>
+            <td>Coming Soon...</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      
+      
+      <br>
+
+      
+    </div>
+
+  {% endblock %}
+</body>
